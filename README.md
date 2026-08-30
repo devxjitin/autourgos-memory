@@ -46,12 +46,12 @@ pip install autourgos-memory autourgos-buffer-memory autourgos-openaichat
 
 ```python
 from autourgos_memory import RuntimeShortTermMemory  # requires autourgos-buffer-memory installed
-from autourgos_react_agent import ReactAgent
+from autourgos_agent import Agent
 from autourgos_openaichat import OpenAIChatModel
 
 my_llm = OpenAIChatModel(model="gpt-4o-mini")  # needs OPENAI_API_KEY set
 memory = RuntimeShortTermMemory(max_messages=20)
-agent  = ReactAgent(llm=my_llm, memory=memory)
+agent  = Agent(llm=my_llm, memory=memory)
 result = agent.invoke("What did I ask you last time?")
 ```
 

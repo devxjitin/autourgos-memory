@@ -29,7 +29,8 @@ agent  = Agent(llm=my_llm, memory=memory)
   recall), `MemoryMessage`, `Document`
 - **Soft re-exports**: concrete backends resolve from `autourgos_memory` directly if their own package is
   installed — `RuntimeShortTermMemory`, `ConversationBufferMemory`, `LocalShortTermMemory`, `SQLiteMemory`,
-  `KeywordRetriever`, `KeywordMemory`, `SummaryBufferedMemory`, `TokenBufferedMemory`
+  `KeywordRetriever`, `KeywordMemory`, `SummaryBufferedMemory`, `TokenBufferedMemory`,
+  `VectorMemory`, `VectorRetriever`
 - Zero required dependencies — install only the concrete backends you actually need
 
 ---
@@ -56,6 +57,7 @@ pip install autourgos-local-memory       # JSON file + SQLite
 pip install autourgos-semantic-memory    # TF-IDF keyword retrieval
 pip install autourgos-summary-memory     # LLM-compressed rolling summary
 pip install autourgos-token-memory       # token-bounded buffer
+pip install autourgos-vector-memory      # local, provider-agnostic embedding recall
 ```
 
 ---
@@ -71,6 +73,7 @@ pip install autourgos-token-memory       # token-bounded buffer
 | `autourgos-semantic-memory` | `KeywordMemory` | TF-IDF retrieval of relevant past context |
 | `autourgos-summary-memory` | `SummaryBufferedMemory` | LLM-compressed history to save tokens |
 | `autourgos-token-memory` | `TokenBufferedMemory` | Token-budget bounded buffer |
+| `autourgos-vector-memory` | `VectorMemory` | Embedding-based recall (you supply the embedding function) |
 
 ---
 

@@ -5,6 +5,7 @@ Install the full suite::
 
     pip install autourgos-memory autourgos-buffer-memory autourgos-local-memory
     pip install autourgos-semantic-memory autourgos-summary-memory autourgos-token-memory
+    pip install autourgos-vector-memory
 
 Quick imports::
 
@@ -37,13 +38,17 @@ try:
     from autourgos_token_memory import TokenBufferedMemory
 except ImportError:
     pass
+try:
+    from autourgos_vector_memory import VectorMemory, VectorRetriever
+except ImportError:
+    pass
 
 try:
     from importlib.metadata import version as _v
     __version__ = _v("autourgos-memory")
 except Exception:
     logger.debug("could not resolve installed version for autourgos-memory", exc_info=True)
-    __version__ = "1.0.5"
+    __version__ = "1.0.6"
 
 __all__ = [
     "BaseMemory", "BaseRetriever", "Document", "MemoryMessage",
@@ -52,4 +57,5 @@ __all__ = [
     "KeywordRetriever", "KeywordMemory", "SimpleSemanticRetriever", "HierarchicalSemanticMemory",
     "SummaryBufferedMemory",
     "TokenBufferedMemory",
+    "VectorMemory", "VectorRetriever",
 ]

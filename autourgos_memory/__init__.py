@@ -48,7 +48,7 @@ try:
     __version__ = _v("autourgos-memory")
 except Exception:
     logger.debug("could not resolve installed version for autourgos-memory", exc_info=True)
-    __version__ = "1.0.2"
+    __version__ = "1.0.4"
 
 __all__ = [
     "BaseMemory", "BaseRetriever", "Document", "MemoryMessage",

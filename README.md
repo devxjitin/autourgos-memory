@@ -1,8 +1,46 @@
 # autourgos-memory
 
-Base memory interfaces for [Autourgos](https://github.com/devxjitin) agents.
+[![Framework: Autourgos](https://img.shields.io/badge/Framework-Autourgos-orange.svg)](https://github.com/devxjitin)
+[![Python](https://img.shields.io/badge/python-3.9%2B-blue.svg)](https://pypi.org/project/autourgos-memory/)
+[![License: Apache 2.0](https://img.shields.io/badge/license-Apache%202.0-green.svg)](https://github.com/devxjitin/autourgos-memory/blob/main/LICENSE)
+[![Author](https://img.shields.io/badge/Author-Jitin%20Kumar%20Sengar-blue.svg)](https://github.com/devxjitin)
+[![Contributor](https://img.shields.io/badge/Contributor-Sonia-blueviolet.svg)]()
+[![Contributor](https://img.shields.io/badge/Contributor-Vishwanil%20Suman-blueviolet.svg)]()
 
-This is the **foundation package** — it defines the abstract interfaces (`BaseMemory`, `BaseRetriever`, `MemoryMessage`, `Document`) that all concrete memory implementations use. Install it on its own, or install one of the concrete packages that depend on it.
+Base memory interfaces for [Autourgos](https://github.com/devxjitin) agents — the **foundation package**. It
+defines the abstract interfaces (`BaseMemory`, `BaseRetriever`, `MemoryMessage`, `Document`) that every
+concrete memory implementation uses.
+
+```python
+from autourgos_memory import RuntimeShortTermMemory  # requires autourgos-buffer-memory installed
+from autourgos_agent import Agent
+from autourgos_openaichat import OpenAIChatModel
+
+my_llm = OpenAIChatModel(model="gpt-4o-mini")
+memory = RuntimeShortTermMemory(max_messages=20)
+agent  = Agent(llm=my_llm, memory=memory)
+```
+
+---
+
+## Features
+
+- **Abstract interfaces**: `BaseMemory` (short-term conversational), `BaseRetriever` (relevance-scored
+  recall), `MemoryMessage`, `Document`
+- **Soft re-exports**: concrete backends resolve from `autourgos_memory` directly if their own package is
+  installed — `RuntimeShortTermMemory`, `ConversationBufferMemory`, `LocalShortTermMemory`, `SQLiteMemory`,
+  `KeywordRetriever`, `KeywordMemory`, `SummaryBufferedMemory`, `TokenBufferedMemory`, `LongTermMemory`
+- Zero required dependencies — install only the concrete backends you actually need
+
+---
+
+## Table of Contents
+
+- [Install](#install)
+- [Memory Types at a Glance](#memory-types-at-a-glance)
+- [Quick Start](#quick-start)
+- [Base Interfaces](#base-interfaces)
+- [License](#license)
 
 ---
 
@@ -13,16 +51,17 @@ This is the **foundation package** — it defines the abstract interfaces (`Base
 pip install autourgos-memory
 
 # Or install concrete implementations individually
-pip install autourgos-buffer-memory    # in-memory ring buffer
-pip install autourgos-local-memory     # JSON file + SQLite
-pip install autourgos-semantic-memory  # TF-IDF keyword retrieval
-pip install autourgos-summary-memory   # LLM-compressed rolling summary
-pip install autourgos-token-memory     # token-bounded buffer
+pip install autourgos-buffer-memory      # in-memory ring buffer
+pip install autourgos-local-memory       # JSON file + SQLite
+pip install autourgos-semantic-memory    # TF-IDF keyword retrieval
+pip install autourgos-summary-memory     # LLM-compressed rolling summary
+pip install autourgos-token-memory       # token-bounded buffer
+pip install autourgos-longterm-memory    # SQLite-backed cross-run recall
 ```
 
 ---
 
-## Memory types at a glance
+## Memory Types at a Glance
 
 | Package | Class | Best for |
 |---|---|---|
@@ -33,19 +72,21 @@ pip install autourgos-token-memory     # token-bounded buffer
 | `autourgos-semantic-memory` | `KeywordMemory` | TF-IDF retrieval of relevant past context |
 | `autourgos-summary-memory` | `SummaryBufferedMemory` | LLM-compressed history to save tokens |
 | `autourgos-token-memory` | `TokenBufferedMemory` | Token-budget bounded buffer |
+| `autourgos-longterm-memory` | `LongTermMemory` | Keyword-scored recall that survives across runs |
 
 ---
 
-## Quick start (with concrete packages installed)
+## Quick Start
 
-`RuntimeShortTermMemory` is soft re-exported from `autourgos_memory` — it only resolves if `autourgos-buffer-memory` is also installed:
+`RuntimeShortTermMemory` is soft re-exported from `autourgos_memory` — it only resolves if
+`autourgos-buffer-memory` is also installed:
 
 ```bash
 pip install autourgos-memory autourgos-buffer-memory autourgos-openaichat
 ```
 
 ```python
-from autourgos_memory import RuntimeShortTermMemory  # requires autourgos-buffer-memory installed
+from autourgos_memory import RuntimeShortTermMemory
 from autourgos_agent import Agent
 from autourgos_openaichat import OpenAIChatModel
 
@@ -57,7 +98,7 @@ result = agent.invoke("What did I ask you last time?")
 
 ---
 
-## Base interfaces
+## Base Interfaces
 
 ### MemoryMessage
 
@@ -108,14 +149,6 @@ doc = Document(content="Paris is the capital of France.", score=0.92, source="wi
 
 ---
 
-## Links
-
-- PyPI: https://pypi.org/project/autourgos-memory/
-- GitHub: https://github.com/devxjitin/autourgos-memory
-- Issues: https://github.com/devxjitin/autourgos-memory/issues
-
----
-
 ## License
 
-MIT — see [LICENSE](LICENSE)
+Apache License 2.0, Copyright (c) 2026 Jitin Kumar Sengar

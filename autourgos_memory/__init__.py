@@ -5,6 +5,7 @@ Install the full suite::
 
     pip install autourgos-memory autourgos-buffer-memory autourgos-local-memory
     pip install autourgos-semantic-memory autourgos-summary-memory autourgos-token-memory
+    pip install autourgos-longterm-memory
 
 Quick imports::
 
@@ -37,6 +38,10 @@ try:
     from autourgos_token_memory import TokenBufferedMemory
 except ImportError:
     pass
+try:
+    from autourgos_longterm_memory import LongTermMemory
+except ImportError:
+    pass
 
 try:
     from importlib.metadata import version as _v
@@ -52,4 +57,5 @@ __all__ = [
     "KeywordRetriever", "KeywordMemory", "SimpleSemanticRetriever", "HierarchicalSemanticMemory",
     "SummaryBufferedMemory",
     "TokenBufferedMemory",
+    "LongTermMemory",
 ]

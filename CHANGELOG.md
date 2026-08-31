@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.0.7] - 2026-08-31
+
+- Added: soft re-export of `Episode`/`EpisodicMemory` from the new `autourgos-episodic-memory` package (structured task/outcome log), matching the existing soft-re-export convention for every other concrete memory backend.
+
 ## [1.0.6] - 2026-08-31
 
 - Added: soft re-export of `VectorMemory`/`VectorRetriever` from the new `autourgos-vector-memory` package (local, provider-agnostic embedding recall -- caller supplies the embedding function), matching the existing soft-re-export convention for every other concrete memory backend.

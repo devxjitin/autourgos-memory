@@ -30,7 +30,7 @@ agent  = Agent(llm=my_llm, memory=memory)
 - **Soft re-exports**: concrete backends resolve from `autourgos_memory` directly if their own package is
   installed — `RuntimeShortTermMemory`, `ConversationBufferMemory`, `LocalShortTermMemory`, `SQLiteMemory`,
   `KeywordRetriever`, `KeywordMemory`, `SummaryBufferedMemory`, `TokenBufferedMemory`,
-  `VectorMemory`, `VectorRetriever`
+  `VectorMemory`, `VectorRetriever`, `EpisodicMemory`
 - Zero required dependencies — install only the concrete backends you actually need
 
 ---
@@ -58,6 +58,7 @@ pip install autourgos-semantic-memory    # TF-IDF keyword retrieval
 pip install autourgos-summary-memory     # LLM-compressed rolling summary
 pip install autourgos-token-memory       # token-bounded buffer
 pip install autourgos-vector-memory      # local, provider-agnostic embedding recall
+pip install autourgos-episodic-memory    # structured task/outcome log
 ```
 
 ---
@@ -74,6 +75,7 @@ pip install autourgos-vector-memory      # local, provider-agnostic embedding re
 | `autourgos-summary-memory` | `SummaryBufferedMemory` | LLM-compressed history to save tokens |
 | `autourgos-token-memory` | `TokenBufferedMemory` | Token-budget bounded buffer |
 | `autourgos-vector-memory` | `VectorMemory` | Embedding-based recall (you supply the embedding function) |
+| `autourgos-episodic-memory` | `EpisodicMemory` | Structured task/outcome log — what was tried, what happened |
 
 ---
 

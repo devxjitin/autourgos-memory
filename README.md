@@ -29,8 +29,9 @@ agent  = Agent(llm=my_llm, memory=memory)
   recall), `MemoryMessage`, `Document`
 - **Soft re-exports**: concrete backends resolve from `autourgos_memory` directly if their own package is
   installed — `RuntimeShortTermMemory`, `ConversationBufferMemory`, `LocalShortTermMemory`, `SQLiteMemory`,
-  `KeywordRetriever`, `KeywordMemory`, `SummaryBufferedMemory`, `TokenBufferedMemory`,
-  `VectorMemory`, `VectorRetriever`, `EpisodicMemory`
+  `KeywordRetriever`, `KeywordMemory`, `SimpleSemanticRetriever`, `HierarchicalSemanticMemory`,
+  `SummaryBufferedMemory`, `TokenBufferedMemory`, `VectorMemory`, `VectorRetriever`, `Episode`,
+  `EpisodicMemory`
 - Zero required dependencies — install only the concrete backends you actually need
 
 ---
@@ -130,6 +131,14 @@ class MyCustomMemory(BaseMemory):
     def format_for_llm(self, query: str = None) -> str: ...
     def clear(self) -> None: ...
 ```
+
+Only `add_user_message`, `add_tool_message`, and `clear` are true `@abstractmethod`s.
+`add_agent_message` and `format_for_llm` are concrete methods with a deprecation-shim fallback:
+each one calls through to an older method name (`add_ai_message` / `get_context` respectively)
+if your subclass implements *that* one instead, emitting a `DeprecationWarning`. This exists
+only to keep a memory backend written against the pre-rename API working unchanged — new
+backends should implement `add_agent_message`/`format_for_llm` directly and can ignore
+`add_ai_message`/`get_context` entirely.
 
 ### BaseRetriever
 

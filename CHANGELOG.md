@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.0.8] - 2026-09-01
+
+- Metadata: added `maintainers` (Sonia, Vishwanil Suman) to `pyproject.toml`,
+  and linked the README's existing Sonia contributor badge to her GitHub
+  profile (https://github.com/dahiyasonia). No code changes.
+
 ## [1.0.7] - 2026-08-31
 
 - Added: soft re-export of `Episode`/`EpisodicMemory` from the new `autourgos-episodic-memory` package (structured task/outcome log), matching the existing soft-re-export convention for every other concrete memory backend.

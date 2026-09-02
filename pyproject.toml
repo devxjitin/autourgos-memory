@@ -4,13 +4,17 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "autourgos-memory"
-version = "1.0.7"
+version = "1.0.8"
 description = "Base memory interfaces for Autourgos agents — BaseMemory, MemoryMessage, Document, BaseRetriever."
 readme = "README.md"
 requires-python = ">=3.9"
 license = { file = "LICENSE" }
 authors = [
     {name = "Jitin Kumar Sengar", email = "devxjitin@gmail.com"}
+]
+maintainers = [
+    {name = "Sonia"},
+    {name = "Vishwanil Suman"},
 ]
 keywords = ["autourgos", "agent", "memory", "llm"]
 classifiers = [

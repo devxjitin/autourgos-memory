@@ -122,23 +122,52 @@ Allowed roles: `user`, `agent`, `system`, `tool`.
 Implement this to create your own memory backend:
 
 ```python
+from datetime import datetime
+from typing import Optional
 from autourgos_memory import BaseMemory, MemoryMessage
 
 class MyCustomMemory(BaseMemory):
-    def add_user_message(self, content: str) -> MemoryMessage: ...
-    def add_agent_message(self, content: str) -> MemoryMessage: ...
-    def add_tool_message(self, tool_name: str, result: str) -> MemoryMessage: ...
+    def add_message(self, role: str, content: str, timestamp: Optional[datetime] = None) -> MemoryMessage: ...
     def format_for_llm(self, query: str = None) -> str: ...
     def clear(self) -> None: ...
 ```
 
-Only `add_user_message`, `add_tool_message`, and `clear` are true `@abstractmethod`s.
-`add_agent_message` and `format_for_llm` are concrete methods with a deprecation-shim fallback:
-each one calls through to an older method name (`add_ai_message` / `get_context` respectively)
-if your subclass implements *that* one instead, emitting a `DeprecationWarning`. This exists
-only to keep a memory backend written against the pre-rename API working unchanged — new
-backends should implement `add_agent_message`/`format_for_llm` directly and can ignore
-`add_ai_message`/`get_context` entirely.
+Only `add_message`, `format_for_llm`, and `clear` are true `@abstractmethod`s.
+`add_user_message`/`add_agent_message`/`add_system_message`/`add_tool_message` are concrete
+defaults built on `add_message(role, content, timestamp=None)` — implement `add_message` once
+and every backend gets all four for free. `add_agent_message` and `format_for_llm` also carry a
+deprecation-shim fallback: each calls through to an older method name (`add_ai_message` /
+`get_context` respectively) if your subclass implements *that* one instead, emitting a
+`DeprecationWarning`. This exists only to keep a memory backend written against the pre-rename
+API working unchanged.
+
+### format_conversation_banner / ROLE_TO_OPENAI
+
+Shared helpers for backends implementing `format_for_llm`/`get_messages`:
+
+```python
+from autourgos_memory import format_conversation_banner, ROLE_TO_OPENAI
+
+format_conversation_banner(messages, include_timestamps=True)
+# "\n--- Previous Conversation Context ---\n[2026-...] user: hi\n--------------------------------------\n"
+
+ROLE_TO_OPENAI  # {"user": "user", "agent": "assistant", "system": "system", "tool": "tool"}
+```
+
+### RetrievalAugmentedMemory
+
+Base class for a dual-store memory: a short-term buffer (recent turns, always included) plus a
+`BaseRetriever` (older, relevant turns, surfaced only when a query is given). This is the shared
+shape behind `autourgos-semantic-memory`'s `KeywordMemory` and `autourgos-vector-memory`'s
+`VectorMemory` — subclass it, build your own `retriever`, and pass both to `super().__init__()`:
+
+```python
+from autourgos_memory import RetrievalAugmentedMemory
+
+class MyRetrievalMemory(RetrievalAugmentedMemory):
+    def __init__(self, my_retriever, short_term=None, top_k=3):
+        super().__init__(short_term=short_term or MyShortTermMemory(), retriever=my_retriever, top_k=top_k)
+```
 
 ### BaseRetriever
 

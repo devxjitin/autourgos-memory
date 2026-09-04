@@ -13,7 +13,15 @@ Quick imports::
 """
 import logging
 
-from .base import BaseMemory, BaseRetriever, Document, MemoryMessage
+from .base import (
+    ROLE_TO_OPENAI,
+    BaseMemory,
+    BaseRetriever,
+    Document,
+    MemoryMessage,
+    RetrievalAugmentedMemory,
+    format_conversation_banner,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -53,6 +61,7 @@ __version__ = package_version("autourgos-memory", fallback="1.1.0", logger=logge
 
 __all__ = [
     "BaseMemory", "BaseRetriever", "Document", "MemoryMessage",
+    "RetrievalAugmentedMemory", "format_conversation_banner", "ROLE_TO_OPENAI",
     "RuntimeShortTermMemory", "ConversationBufferMemory",
     "LocalShortTermMemory", "SQLiteMemory",
     "KeywordRetriever", "KeywordMemory", "SimpleSemanticRetriever", "HierarchicalSemanticMemory",

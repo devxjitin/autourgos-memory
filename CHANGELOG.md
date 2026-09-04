@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.2.0] - 2026-09-05
+
+- **Breaking (for external `BaseMemory` subclasses):** `add_message(role, content, timestamp=None)` is now abstract on `BaseMemory`. `add_user_message`/`add_agent_message`/`add_tool_message` are concrete defaults built on it; any subclass implementing only `add_user_message`/etc. directly (without `add_message`) will fail to instantiate.
+- Added: `add_system_message()` default on `BaseMemory` (built on `add_message`).
+- Added: `format_conversation_banner(messages, *, include_timestamps=True)` -- shared "Previous Conversation Context" rendering, extracted from the identical logic duplicated across every concrete backend's `format_for_llm()`.
+- Added: `ROLE_TO_OPENAI` mapping (`{"user": "user", "agent": "assistant", "system": "system", "tool": "tool"}`), extracted from `autourgos-buffer-memory`'s duplicated inline dict.
+- Added: `RetrievalAugmentedMemory` base class -- the shared dual-store (short-term buffer + retriever) shape behind `autourgos-semantic-memory`'s `KeywordMemory` and `autourgos-vector-memory`'s `VectorMemory`.
+
 ## [1.1.0] - 2026-09-04
 
 - Internal: `__version__` resolution moved to `autourgos_core.package_version()` (new `autourgos-core>=0.3.0` dependency). No functional change.

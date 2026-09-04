@@ -47,12 +47,9 @@ try:
 except ImportError:
     pass
 
-try:
-    from importlib.metadata import version as _v
-    __version__ = _v("autourgos-memory")
-except Exception:
-    logger.debug("could not resolve installed version for autourgos-memory", exc_info=True)
-    __version__ = "1.0.9"
+from autourgos_core import package_version
+
+__version__ = package_version("autourgos-memory", fallback="1.1.0", logger=logger)
 
 __all__ = [
     "BaseMemory", "BaseRetriever", "Document", "MemoryMessage",

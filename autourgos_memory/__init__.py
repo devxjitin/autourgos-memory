@@ -1,15 +1,16 @@
 """
-autourgos-memory — Base memory interfaces for Autourgos.
+autourgos-memory — Unified memory package for Autourgos agents.
 
-Install the full suite::
+Base interfaces (BaseMemory, MemoryMessage, Document, BaseRetriever) plus
+every concrete memory implementation in one package, selectable by direct
+import::
 
-    pip install autourgos-memory autourgos-buffer-memory autourgos-local-memory
-    pip install autourgos-semantic-memory autourgos-summary-memory autourgos-token-memory
-    pip install autourgos-vector-memory autourgos-episodic-memory
+    from autourgos_memory import RuntimeShortTermMemory
+    memory = RuntimeShortTermMemory(max_messages=20)
 
-Quick imports::
-
-    from autourgos_memory import BaseMemory, MemoryMessage, Document, BaseRetriever
+VectorMemory/VectorRetriever require the ``autourgos-memory[vector]`` extra
+(numpy); if numpy isn't installed those names are simply absent from this
+module's namespace.
 """
 import logging
 
@@ -22,51 +23,40 @@ from .base import (
     RetrievalAugmentedMemory,
     format_conversation_banner,
 )
+from .buffer import RuntimeShortTermMemory, ConversationBufferMemory, ExpiringBufferMemory
+from .local import LocalShortTermMemory, SQLiteMemory
+from .semantic import (
+    tokenize,
+    KeywordRetriever,
+    KeywordMemory,
+    SimpleSemanticRetriever,
+    HierarchicalSemanticMemory,
+)
+from .summary import SummaryBufferedMemory
+from .token import TokenBufferedMemory
+from .episodic import Episode, EpisodicMemory, EpisodicMemoryError
 
 logger = logging.getLogger(__name__)
 
-# soft re-exports of concrete implementations
+__all__ = [
+    "BaseMemory", "BaseRetriever", "Document", "MemoryMessage",
+    "RetrievalAugmentedMemory", "format_conversation_banner", "ROLE_TO_OPENAI",
+    "RuntimeShortTermMemory", "ConversationBufferMemory", "ExpiringBufferMemory",
+    "LocalShortTermMemory", "SQLiteMemory",
+    "tokenize", "KeywordRetriever", "KeywordMemory", "SimpleSemanticRetriever", "HierarchicalSemanticMemory",
+    "SummaryBufferedMemory",
+    "TokenBufferedMemory",
+    "Episode", "EpisodicMemory", "EpisodicMemoryError",
+]
+
+# VectorMemory/VectorRetriever need numpy (the `[vector]` extra); keep the
+# rest of the package importable when it isn't installed.
 try:
-    from autourgos_buffer_memory import RuntimeShortTermMemory, ConversationBufferMemory
-except ImportError:
-    pass
-try:
-    from autourgos_local_memory import LocalShortTermMemory, SQLiteMemory
-except ImportError:
-    pass
-try:
-    from autourgos_semantic_memory import KeywordRetriever, KeywordMemory, SimpleSemanticRetriever, HierarchicalSemanticMemory
-except ImportError:
-    pass
-try:
-    from autourgos_summary_memory import SummaryBufferedMemory
-except ImportError:
-    pass
-try:
-    from autourgos_token_memory import TokenBufferedMemory
-except ImportError:
-    pass
-try:
-    from autourgos_vector_memory import VectorMemory, VectorRetriever
-except ImportError:
-    pass
-try:
-    from autourgos_episodic_memory import Episode, EpisodicMemory
+    from .vector import VectorMemory, VectorMemoryError, VectorRetriever
+    __all__ += ["VectorMemory", "VectorRetriever", "VectorMemoryError"]
 except ImportError:
     pass
 
 from autourgos_core import package_version
 
-__version__ = package_version("autourgos-memory", fallback="1.1.0", logger=logger)
-
-__all__ = [
-    "BaseMemory", "BaseRetriever", "Document", "MemoryMessage",
-    "RetrievalAugmentedMemory", "format_conversation_banner", "ROLE_TO_OPENAI",
-    "RuntimeShortTermMemory", "ConversationBufferMemory",
-    "LocalShortTermMemory", "SQLiteMemory",
-    "KeywordRetriever", "KeywordMemory", "SimpleSemanticRetriever", "HierarchicalSemanticMemory",
-    "SummaryBufferedMemory",
-    "TokenBufferedMemory",
-    "VectorMemory", "VectorRetriever",
-    "Episode", "EpisodicMemory",
-]
+__version__ = package_version("autourgos-memory", fallback="2.0.0", logger=logger)

@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.0.0] - 2026-09-07
+
+- **Breaking:** Consolidated the 7 sibling memory packages (`autourgos-buffer-memory`, `autourgos-local-memory`, `autourgos-semantic-memory`, `autourgos-summary-memory`, `autourgos-token-memory`, `autourgos-vector-memory`, `autourgos-episodic-memory`) into this package as submodules (`autourgos_memory.buffer`, `.local`, `.semantic`, `.summary`, `.token`, `.vector`, `.episodic`). All their public classes are now direct, always-available imports from `autourgos_memory` (previously "soft re-exports" that only resolved if the sibling package happened to be installed).
+- **Breaking:** `pip install autourgos-buffer-memory` etc. no longer needed (and those packages are being decommissioned) — everything lives in `autourgos-memory` now. `VectorMemory`/`VectorRetriever` require the new `autourgos-memory[vector]` extra (numpy); `TokenBufferedMemory`'s accurate token counting requires the new `autourgos-memory[tiktoken]` extra. `pip install autourgos-memory[all]` installs both.
+- Migration: replace `from autourgos_buffer_memory import X` (and the other 6 sibling-package imports) with `from autourgos_memory import X` — the class names are unchanged.
+
 ## [1.2.0] - 2026-09-05
 
 - **Breaking (for external `BaseMemory` subclasses):** `add_message(role, content, timestamp=None)` is now abstract on `BaseMemory`. `add_user_message`/`add_agent_message`/`add_tool_message` are concrete defaults built on it; any subclass implementing only `add_user_message`/etc. directly (without `add_message`) will fail to instantiate.

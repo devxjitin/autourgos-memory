@@ -4,8 +4,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "autourgos-memory"
-version = "1.2.0"
-description = "Base memory interfaces for Autourgos agents — BaseMemory, MemoryMessage, Document, BaseRetriever."
+version = "2.0.0"
+description = "Unified memory package for Autourgos agents — base interfaces plus every concrete memory implementation (buffer, local, semantic, summary, token, vector, episodic)."
 readme = "README.md"
 requires-python = ">=3.9"
 license = { file = "LICENSE" }
@@ -28,8 +28,13 @@ classifiers = [
     "Programming Language :: Python :: 3.12",
 ]
 dependencies = [
-    "autourgos-core>=0.3.0",
+    "autourgos-core>=0.9.0",
 ]
+
+[project.optional-dependencies]
+vector = ["numpy>=1.24"]
+tiktoken = ["tiktoken>=0.5"]
+all = ["autourgos-memory[vector,tiktoken]"]
 
 
 [project.urls]

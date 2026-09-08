@@ -50,7 +50,22 @@ class MemoryMessage:
 
 
 class BaseMemory(ABC):
-    """Abstract interface for agent memory."""
+    """Abstract interface for agent memory.
+
+    Note: ``get_messages()`` is intentionally NOT part of this interface --
+    not every backend can cheaply return its full history in one shape
+    (``RetrievalAugmentedMemory`` subclasses, for instance, have no single
+    "the messages" list). Backends that do implement it disagree on the
+    return shape: ``RuntimeShortTermMemory``/``ExpiringBufferMemory``
+    (buffer.py) return ``List[Dict[str, str]]`` (plain dicts, e.g.
+    ``msg["content"]``), while ``ConversationBufferMemory``/
+    ``SummaryBufferedMemory``/``TokenBufferedMemory`` (local.py/summary.py/
+    token.py) return ``List[MemoryMessage]`` (dataclass instances, e.g.
+    ``msg.content``). Code written against one shape breaks if the backend
+    is swapped for the other -- branch with ``hasattr(m, "content")`` (as
+    ``RetrievalAugmentedMemory.format_for_llm()`` already does) if you need
+    to handle either, or check the concrete backend's own docstring.
+    """
 
     @abstractmethod
     def add_message(self, role: str, content: str, timestamp: Optional[datetime] = None) -> MemoryMessage: ...
@@ -116,6 +131,9 @@ class BaseRetriever(ABC):
     @abstractmethod
     def retrieve(self, query: str, top_k: int = 5) -> List[Document]: ...
 
+    @abstractmethod
+    def clear(self) -> None: ...
+
     async def aretrieve(self, query: str, top_k: int = 5) -> List[Document]:
         import asyncio
         return await asyncio.to_thread(self.retrieve, query, top_k)
@@ -133,6 +151,19 @@ class RetrievalAugmentedMemory(BaseMemory):
     """
 
     def __init__(self, *, short_term: BaseMemory, retriever: BaseRetriever, top_k: int = 3) -> None:
+        # BaseRetriever only requires retrieve()/clear() -- some retrievers
+        # (e.g. autourgos-memory's own EpisodicMemory) deliberately have no
+        # add_document(), writing through their own API instead, so it can't
+        # be a BaseRetriever abstract method without breaking those.
+        # RetrievalAugmentedMemory specifically calls add_document() on
+        # every add_message()/add_tool_message(), so it needs one -- checked
+        # here, at construction, instead of failing with an AttributeError
+        # the first time a message is actually added.
+        if not callable(getattr(retriever, "add_document", None)):
+            raise TypeError(
+                f"{type(retriever).__name__} has no add_document() method -- "
+                "RetrievalAugmentedMemory requires a retriever that supports it."
+            )
         self.short_term = short_term
         self.retriever = retriever
         self.top_k = top_k

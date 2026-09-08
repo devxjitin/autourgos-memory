@@ -82,6 +82,32 @@ def test_add_ai_message_warns_on_default_memory():
     assert msg.content == "z"
 
 
+def test_get_context_warns_and_delegates_to_format_for_llm():
+    """Mirrors test_add_ai_message_warns_on_default_memory() -- features.md
+    documents a backward-compat shim for both add_agent_message/add_ai_message
+    AND format_for_llm/get_context, but only the first pair had a test."""
+    mem = DummyMemory()
+    mem.add_user_message("hello")
+    with pytest.warns(DeprecationWarning):
+        result = mem.get_context()
+    assert result == mem.format_for_llm()
+
+
+def test_format_for_llm_not_implemented_by_default():
+    """format_for_llm() raises NotImplementedError when a subclass overrides
+    neither it nor the deprecated get_context() -- the base class has no
+    other way to know how to render its messages."""
+    class BareMemory(BaseMemory):
+        def add_message(self, role, content, timestamp=None):
+            return MemoryMessage(role=role, content=content, timestamp=timestamp or datetime.now(timezone.utc))
+
+        def clear(self):
+            pass
+
+    with pytest.raises(NotImplementedError):
+        BareMemory().format_for_llm()
+
+
 def test_cannot_instantiate_without_add_message():
     class Incomplete(BaseMemory):
         def clear(self):

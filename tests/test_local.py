@@ -1,6 +1,5 @@
 """Smoke tests for LocalShortTermMemory and SQLiteMemory."""
 import os
-import tempfile
 
 import pytest
 

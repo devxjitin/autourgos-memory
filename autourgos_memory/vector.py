@@ -14,14 +14,14 @@ from __future__ import annotations
 import json
 import threading
 from datetime import datetime, timezone
-from typing import Any, Callable, Dict, List, Optional, Sequence
+from typing import Any, Callable, List, Optional, Sequence
 
 import numpy as np
 
 from autourgos_core import open_sqlite, row_cap_evict
 
 from .buffer import RuntimeShortTermMemory
-from .base import BaseMemory, BaseRetriever, Document, MemoryMessage, RetrievalAugmentedMemory
+from .base import BaseMemory, BaseRetriever, Document, RetrievalAugmentedMemory
 
 
 class VectorMemoryError(Exception):

@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "autourgos-memory"
-version = "2.0.0"
+version = "2.1.0"
 description = "Unified memory package for Autourgos agents — base interfaces plus every concrete memory implementation (buffer, local, semantic, summary, token, vector, episodic)."
 readme = "README.md"
 requires-python = ">=3.9"

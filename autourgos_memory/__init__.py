@@ -59,4 +59,4 @@ except ImportError:
 
 from autourgos_core import package_version
 
-__version__ = package_version("autourgos-memory", fallback="2.0.0", logger=logger)
+__version__ = package_version("autourgos-memory", fallback="2.1.0", logger=logger)

@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.1.0] - 2026-09-09
+
+- **Fixed:** `BaseRetriever.clear()` is now an abstract method (all real subclasses already implemented it, but nothing enforced it). `add_document()` could not be made abstract the same way -- `EpisodicMemory` deliberately has no `add_document()` (it writes through its own `remember()` API) and would have become uninstantiable -- so instead `RetrievalAugmentedMemory.__init__` now validates its retriever has `add_document()` up front, turning a deferred `AttributeError` on first use into an immediate, clear `TypeError` at construction.
+- **Docs:** `BaseMemory`'s docstring now documents that `get_messages()` is intentionally not part of the interface, and explains the shape split between backends (`List[Dict]` for the buffer family vs `List[MemoryMessage]` for the rest) that was previously undocumented.
+- Added a `get_context()`/`format_for_llm()` deprecation-shim test (the `add_ai_message`/`add_agent_message` half was already tested; this half was not). Removed unused imports.
+
 ## [2.0.0] - 2026-09-07
 
 - **Breaking:** Consolidated the 7 sibling memory packages (`autourgos-buffer-memory`, `autourgos-local-memory`, `autourgos-semantic-memory`, `autourgos-summary-memory`, `autourgos-token-memory`, `autourgos-vector-memory`, `autourgos-episodic-memory`) into this package as submodules (`autourgos_memory.buffer`, `.local`, `.semantic`, `.summary`, `.token`, `.vector`, `.episodic`). All their public classes are now direct, always-available imports from `autourgos_memory` (previously "soft re-exports" that only resolved if the sibling package happened to be installed).
